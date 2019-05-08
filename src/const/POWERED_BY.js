@@ -1,6 +1,5 @@
 /**
- * Data Studio by Eviratec
- * Copyright (c) 2017 - 2019 Callan Peter Milne
+ * Copyright (c) 2019 Callan Peter Milne
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above

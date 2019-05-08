@@ -1,25 +1,25 @@
-# Data Studio Web API
+# TaskEvo 7 Web API
 
-Web API for Data Studio by Eviratec
+Web API for TaskEvo 7 by Eviratec
 
 ## Install
 
 1. Install dependencies: `$ npm install`
 2. Create a new MySQL database
 3. Import SQL tables from files in `/src/sql`
-4. Define DB connection environment variables: `DS_DB_HOST`, `DS_DB_USER`, `DS_DB_PASS`, and `DS_DB_NAME` (e.g. `$ export DS_DB_HOST=localhost`)
-5. Test installation: `$ npm test`
-6. Start server `$ ./bin/ds-api`
+4. Define DB connection environment variables: `TASKEVO_DB_HOST`, `TASKEVO_DB_USER`, `TASKEVO_DB_PASS`, and `TASKEVO_DB_NAME` (e.g. `$ export TASKEVO_DB_HOST=localhost`)
+5. Test installation: `$ ./bin/test.sh`
+6. Start server `$ ./bin/webapi.sh`
 
 ## Test
 
 1. Follow installation instructions above
-2. Run tests with `$ npm test`
+2. Run tests with `$ ./bin/test.sh`
 
 ## License
 
 ```
-Copyright (c) 2017 - 2019 Callan Peter Milne
+Copyright (c) 2019 Callan Peter Milne
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
