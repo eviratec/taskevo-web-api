@@ -6,4 +6,4 @@ export TASKEVO_DB_USER="taskevo"
 export TASKEVO_DB_PASS="taskevo"
 export TASKEVO_DB_NAME="taskevo"
 
-node ../index.js
+./bin/taskevo-api --port=3580

@@ -27,7 +27,7 @@ module.exports = function (port, verbose) {
         console.log(layer.route.path);
       }
       catch (e) {
-        console.log(e);
+        // console.log(e);
       }
     });
   });
