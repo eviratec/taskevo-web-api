@@ -37,6 +37,7 @@ function addListRoutes (taskevo) {
     // Change list properties
     ["put", "/list/:listId/title", require("./changeListTitleById")],
     ["put", "/list/:listId/details", require("./changeListDetailsById")],
+    ["put", "/list/:listId/completed", require("./changeListCompletedById")],
 
   ];
 

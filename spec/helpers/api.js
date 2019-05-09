@@ -160,6 +160,49 @@
       req.write(postData);
       req.end();
     }
+
+    $put (authorization, path, body, cb) {
+      const putData = JSON.stringify(body);
+      const options = {
+        hostname: this.remoteAddress,
+        port: this.remotePort,
+        path: path,
+        method: "PUT",
+        headers: {
+          "Content-Type": APPLICATION_JSON,
+          "Content-Length": Buffer.byteLength(putData)
+        }
+      };
+
+      if (authorization) {
+        options.headers["Authorization"] = authorization;
+      }
+
+      const req = http.request(options, (res) => {
+        res.setEncoding("utf8");
+        res.d = "";
+        res.on("data", (chunk) => {
+          res.d += chunk;
+        });
+        res.on("end", () => {
+          if (res.d) {
+            try {
+              res.d = JSON.parse(res.d);
+            }
+            catch (e) {}
+          }
+          cb(undefined, res);
+        });
+      });
+
+      req.on("error", (e) => {
+        console.error(`problem with request: ${e.message}`);
+        cb(e);
+      });
+
+      req.write(putData);
+      req.end();
+    }
   }
 
   jasmine.startTestApi = function (port) {

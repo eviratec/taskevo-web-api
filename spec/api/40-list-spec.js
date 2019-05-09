@@ -253,6 +253,80 @@ describe("LIST REST API", function () {
 
       });
 
+      describe("updating list properties", function () {
+
+        let listId;
+        let listData;
+
+        beforeEach(function (done) {
+          listData = {
+            Name: "Test List",
+            CategoryId: categoryId,
+          };
+          $testClient.$post(authorization, `/lists`, listData, function (err, res) {
+            listId = res.d.Id;
+            done();
+          });
+        });
+
+        describe("changing the value for the 'Completed' property", function () {
+
+          describe("to 'now'", function () {
+
+            it("RETURNS `HTTP/1.1 200 OK`", function (done) {
+              let data = {
+                newValue: "now",
+              };
+              $testClient.$put(authorization, `/list/${listId}/completed`, data, function (err, res) {
+                expect(res.statusCode).toBe(200);
+                done();
+              });
+            });
+
+            it("UPDATES THE VALUE CORRECTLY", function (done) {
+              let data = {
+                newValue: "now",
+              };
+              $testClient.$put(authorization, `/list/${listId}/completed`, data, function (err, res) {
+                $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
+                  expect(res.d.Completed).toEqual(jasmine.any(Number));
+                  done();
+                });
+              });
+            });
+
+          });
+
+          describe("to null", function () {
+
+            it("RETURNS `HTTP/1.1 200 OK`", function (done) {
+              let data = {
+                newValue: null,
+              };
+              $testClient.$put(authorization, `/list/${listId}/completed`, data, function (err, res) {
+                expect(res.statusCode).toBe(200);
+                done();
+              });
+            });
+
+            it("UPDATES THE VALUE CORRECTLY", function (done) {
+              let data = {
+                newValue: null,
+              };
+              $testClient.$put(authorization, `/list/${listId}/completed`, data, function (err, res) {
+                $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
+                  expect(res.d.Completed).toBe(null);
+                  done();
+                });
+              });
+            });
+
+          });
+
+        });
+
+      });
+
     });
 
   });
