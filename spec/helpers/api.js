@@ -203,6 +203,54 @@
       req.write(putData);
       req.end();
     }
+
+    $delete (authorization, path, cb) {
+      const options = {
+        hostname: this.remoteAddress,
+        port: this.remotePort,
+        path: path,
+        method: "DELETE",
+        headers: {
+          "Accept": APPLICATION_JSON
+        }
+      };
+
+      if (authorization) {
+        options.headers["Authorization"] = authorization;
+      }
+
+      setTimeout(() => {
+
+        let req = http.request(options, function (res) {
+          res.setEncoding("utf8");
+          res.d = "";
+          res.on("data", function (chunk) {
+            res.d += chunk;
+          });
+          res.on("end", function () {
+            let d = res.d;
+            if (res.d) {
+              try {
+                res.d = JSON.parse(res.d);
+              }
+              catch (e) {
+                res.d = d;
+              }
+            }
+            cb(undefined, res);
+          });
+        });
+
+        req.on("error", (e) => {
+          console.error(`problem with request: ${e.message}`);
+          cb(e);
+        });
+
+        req.end();
+
+      }, 50);
+
+    }
   }
 
   jasmine.startTestApi = function (port) {
