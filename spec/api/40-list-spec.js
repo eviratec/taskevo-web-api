@@ -347,7 +347,7 @@ describe("LIST REST API", function () {
             };
             $testClient.$put(authorization, `/list/${listId}/title`, data, function (err, res) {
               $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
-                expect(res.d.Name).toBe("New List Title");
+                expect(res.d.Title).toBe("New List Title");
                 done();
               });
             });
