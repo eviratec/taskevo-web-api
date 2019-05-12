@@ -22,7 +22,33 @@ function deleteCategoryById (taskevo) {
   const authz = taskevo.authz;
 
   return function (req, res) {
-    res.status(200).send();
+    let categoryId = req.params.categoryId;
+    let userId = req.authUser.get("Id");
+    let categoryUri = `/category/${categoryId}`;
+
+    authz.verifyOwnership(categoryUri, userId)
+      .then(fetchCategory)
+      .then(setCategoryDeletedNow)
+      .then(returnSuccess)
+      .catch(onError);
+
+    function fetchCategory () {
+      return db.fetchCategoryById(categoryId);
+    }
+
+    function setCategoryDeletedNow (category) {
+      return category.save({
+        Deleted: Math.floor(Date.now()/1000),
+      });
+    }
+
+    function returnSuccess () {
+      res.status(200).send();
+    }
+
+    function onError () {
+      res.status(400).send();
+    }
   }
 
 }
