@@ -329,6 +329,32 @@ describe("LIST REST API", function () {
 
         });
 
+        describe("changing the value for the 'Name' property", function () {
+
+          it("RETURNS `HTTP/1.1 200 OK`", function (done) {
+            let data = {
+              newValue: "New List Name",
+            };
+            $testClient.$put(authorization, `/list/${listId}/name`, data, function (err, res) {
+              expect(res.statusCode).toBe(200);
+              done();
+            });
+          });
+
+          it("UPDATES THE VALUE CORRECTLY", function (done) {
+            let data = {
+              newValue: "New List Name",
+            };
+            $testClient.$put(authorization, `/list/${listId}/name`, data, function (err, res) {
+              $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
+                expect(res.d.Name).toBe("New List Name");
+                done();
+              });
+            });
+          });
+
+        });
+
       });
 
       describe("deleting top-level lists", function () {
