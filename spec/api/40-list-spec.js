@@ -57,10 +57,10 @@ describe("LIST REST API", function () {
 
     beforeEach(function (done) {
       listData = {
-        Name: "My Test List",
+        Title: "My Test List",
       };
       categoryData = {
-        Name: "My Test Category",
+        Title: "My Test Category",
       };
       $testClient.$post(authorization, `/categories`, categoryData, function (err, res) {
         category = res.d;
@@ -162,10 +162,10 @@ describe("LIST REST API", function () {
 
         beforeEach(function (done) {
           childListData = {
-            Name: "My Test Child List",
+            Title: "My Test Child List",
           };
           parentListData = {
-            Name: "My Test Parent List",
+            Title: "My Test Parent List",
           };
           $testClient.$post(authorization, `/lists`, parentListData, function (err, res) {
             parentList = res.d;
@@ -264,7 +264,7 @@ describe("LIST REST API", function () {
 
         beforeEach(function (done) {
           listData = {
-            Name: "Test List",
+            Title: "Test List",
             CategoryId: categoryId,
           };
           $testClient.$post(authorization, `/lists`, listData, function (err, res) {
@@ -333,9 +333,9 @@ describe("LIST REST API", function () {
 
           it("RETURNS `HTTP/1.1 200 OK`", function (done) {
             let data = {
-              newValue: "New List Name",
+              newValue: "New List Title",
             };
-            $testClient.$put(authorization, `/list/${listId}/name`, data, function (err, res) {
+            $testClient.$put(authorization, `/list/${listId}/title`, data, function (err, res) {
               expect(res.statusCode).toBe(200);
               done();
             });
@@ -343,11 +343,11 @@ describe("LIST REST API", function () {
 
           it("UPDATES THE VALUE CORRECTLY", function (done) {
             let data = {
-              newValue: "New List Name",
+              newValue: "New List Title",
             };
-            $testClient.$put(authorization, `/list/${listId}/name`, data, function (err, res) {
+            $testClient.$put(authorization, `/list/${listId}/title`, data, function (err, res) {
               $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
-                expect(res.d.Name).toBe("New List Name");
+                expect(res.d.Name).toBe("New List Title");
                 done();
               });
             });
@@ -364,7 +364,7 @@ describe("LIST REST API", function () {
 
         beforeEach(function (done) {
           listData = {
-            Name: "Test List",
+            Title: "Test List",
             CategoryId: categoryId,
           };
           $testClient.$post(authorization, `/lists`, listData, function (err, res) {
@@ -438,10 +438,10 @@ describe("LIST REST API", function () {
 
         beforeEach(function (done) {
           listData = {
-            Name: "My Test Child List",
+            Title: "My Test Child List",
           };
           parentListData = {
-            Name: "My Test Parent List",
+            Title: "My Test Parent List",
           };
           $testClient.$post(authorization, `/lists`, parentListData, function (err, res) {
             parentList = res.d;
