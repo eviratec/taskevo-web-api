@@ -145,4 +145,67 @@ describe("CATEGORY REST API", function () {
 
   });
 
+  describe("/category/:categoryId", function () {
+
+    let categoryData;
+    let category;
+    let categoryId;
+
+    beforeEach(function (done) {
+      categoryData = {
+        Name: "My Test Category",
+      };
+      $testClient.$post(authorization, `/categories`, categoryData, function (err, res) {
+        category = res.d;
+        categoryId = category.Id;
+        done();
+      });
+    });
+
+    it("RETURNS `HTTP/1.1 403 Forbidden` WHEN `Authorization` HEADER IS NOT PROVIDED", function (done) {
+      $testClient.$delete(null, `/category/${categoryId}`, function (err, res) {
+        expect(res.statusCode).toBe(403);
+        done();
+      });
+    });
+
+    describe("deleteCategory <DELETE> with valid parameters", function () {
+
+      describe("as the resource owner", function () {
+
+        describe("successful request", function () {
+
+          it("RETURNS `HTTP/1.1 200 OK` WHEN `Authorization` HEADER IS PROVIDED", function (done) {
+            $testClient.$delete(authorization, `/category/${categoryId}`, function (err, res) {
+              expect(res.statusCode).toBe(200);
+              done();
+            });
+          });
+
+          describe("subsequent requests", function () {
+            describe("to /categories/all", function () {
+              it("should not include the deleted category", function (done) {
+                $testClient.$delete(authorization, `/category/${categoryId}`, function (err, res) {
+                  $testClient.$get(authorization, `/categories/all`, function (err, res) {
+                    expect(res.d).not.toEqual(jasmine.arrayContaining([
+                      jasmine.objectContaining({
+                        Id: categoryId,
+                        Name: "My Test Category",
+                      }),
+                    ]));
+                    done();
+                  });
+                });
+              });
+            });
+          });
+
+        });
+
+      });
+
+    });
+
+  });
+
 });
