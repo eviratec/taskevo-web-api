@@ -162,6 +162,36 @@ describe("CATEGORY REST API", function () {
       });
     });
 
+    describe("updating category properties", function () {
+
+      describe("changing the value for the 'Name' property", function () {
+
+        it("RETURNS `HTTP/1.1 200 OK`", function (done) {
+          let data = {
+            newValue: "New Category Name",
+          };
+          $testClient.$put(authorization, `/category/${categoryId}/name`, data, function (err, res) {
+            expect(res.statusCode).toBe(200);
+            done();
+          });
+        });
+
+        it("UPDATES THE VALUE CORRECTLY", function (done) {
+          let data = {
+            newValue: "New Category Name",
+          };
+          $testClient.$put(authorization, `/category/${categoryId}/name`, data, function (err, res) {
+            $testClient.$get(authorization, `/category/${categoryId}`, function (err, res) {
+              expect(res.d.Name).toBe("New Category Name");
+              done();
+            });
+          });
+        });
+
+      });
+
+    });
+
     describe("deleting categories", function () {
 
       it("RETURNS `HTTP/1.1 403 Forbidden` WHEN `Authorization` HEADER IS NOT PROVIDED", function (done) {
