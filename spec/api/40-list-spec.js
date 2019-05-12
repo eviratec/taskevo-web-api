@@ -72,9 +72,9 @@ describe("LIST REST API", function () {
       });
     });
 
-    describe("[createList] POST /lists", function () {
+    describe("createList <POST> with valid parameters", function () {
 
-      describe("creating top-level lists", function () {
+      describe("top-level lists", function () {
 
         it("RETURNS `HTTP/1.1 403 Forbidden` WHEN `Authorization` HEADER IS NOT PROVIDED", function (done) {
           $testClient.$post(null, `/lists`, listData, function (err, res) {
@@ -152,7 +152,7 @@ describe("LIST REST API", function () {
 
       });
 
-      describe("creating nested lists", function () {
+      describe("nested lists", function () {
 
         let parentListData;
         let parentList;
@@ -253,6 +253,10 @@ describe("LIST REST API", function () {
 
       });
 
+    });
+
+    describe("/list/:listId", function () {
+
       describe("updating list properties", function () {
 
         let listId;
@@ -316,6 +320,158 @@ describe("LIST REST API", function () {
               $testClient.$put(authorization, `/list/${listId}/completed`, data, function (err, res) {
                 $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
                   expect(res.d.Completed).toBe(null);
+                  done();
+                });
+              });
+            });
+
+          });
+
+        });
+
+      });
+
+      describe("deleting top-level lists", function () {
+
+        let listId;
+        let listData;
+
+        beforeEach(function (done) {
+          listData = {
+            Name: "Test List",
+            CategoryId: categoryId,
+          };
+          $testClient.$post(authorization, `/lists`, listData, function (err, res) {
+            listId = res.d.Id;
+            done();
+          });
+        });
+
+        describe("as the resource owner", function () {
+
+          it("RETURNS `HTTP/1.1 403 Forbidden` WHEN `Authorization` HEADER IS NOT PROVIDED", function (done) {
+            $testClient.$delete(null, `/list/${listId}`, function (err, res) {
+              expect(res.statusCode).toBe(403);
+              done();
+            });
+          });
+
+          describe("successful request", function () {
+
+            it("RETURNS `HTTP/1.1 200 OK` WHEN `Authorization` HEADER IS PROVIDED", function (done) {
+              $testClient.$delete(authorization, `/list/${listId}`, function (err, res) {
+                expect(res.statusCode).toBe(200);
+                done();
+              });
+            });
+
+            it("REMOVES THE LIST FROM THE CATEGORY'S LISTS PROPERTY", function (done) {
+              $testClient.$delete(authorization, `/list/${listId}`, function (err, res) {
+                $testClient.$get(authorization, `/category/${categoryId}`, function (err, res) {
+                  expect(res.statusCode).toBe(200);
+                  expect(res.d).not.toEqual(jasmine.objectContaining({
+                    "Lists": jasmine.arrayContaining([
+                      jasmine.objectContaining({
+                        "Id": listId,
+                      }),
+                    ]),
+                  }));
+                  done();
+                });
+              });
+            });
+
+            it("REMOVES THE LIST FROM THE CATEGORY'S LIST OF LISTS", function (done) {
+              $testClient.$delete(authorization, `/list/${listId}`, function (err, res) {
+                $testClient.$get(authorization, `/category/${categoryId}/lists`, function (err, res) {
+                  expect(res.statusCode).toBe(200);
+                  expect(res.d).not.toEqual(jasmine.arrayContaining([
+                    jasmine.objectContaining({
+                      "Id": listId,
+                    }),
+                  ]));
+                  done();
+                });
+              });
+            });
+
+          });
+
+        });
+
+      });
+
+      describe("deleting nested lists", function () {
+
+        let parentListData;
+        let parentList;
+        let parentListId;
+
+        let listId;
+        let listData;
+
+        beforeEach(function (done) {
+          listData = {
+            Name: "My Test Child List",
+          };
+          parentListData = {
+            Name: "My Test Parent List",
+          };
+          $testClient.$post(authorization, `/lists`, parentListData, function (err, res) {
+            parentList = res.d;
+            parentListId = parentList.Id;
+
+            listData.ParentId = parentListId;
+            $testClient.$post(authorization, `/lists`, listData, function (err, res) {
+              listId = res.d.Id;
+              done();
+            });
+          });
+        });
+
+        describe("as the resource owner", function () {
+
+          it("RETURNS `HTTP/1.1 403 Forbidden` WHEN `Authorization` HEADER IS NOT PROVIDED", function (done) {
+            $testClient.$delete(null, `/list/${listId}`, function (err, res) {
+              expect(res.statusCode).toBe(403);
+              done();
+            });
+          });
+
+          describe("successful request", function () {
+
+            it("RETURNS `HTTP/1.1 200 OK` WHEN `Authorization` HEADER IS PROVIDED", function (done) {
+              $testClient.$delete(authorization, `/list/${listId}`, function (err, res) {
+                expect(res.statusCode).toBe(200);
+                done();
+              });
+            });
+
+            it("REMOVES THE LIST FROM THE PARENT'S LISTS PROPERTY", function (done) {
+              $testClient.$delete(authorization, `/list/${listId}`, function (err, res) {
+                $testClient.$get(authorization, `/list/${parentListId}`, function (err, res) {
+                  expect(res.statusCode).toBe(200);
+                  expect(res.d).not.toEqual(jasmine.objectContaining({
+                    "Lists": jasmine.arrayContaining([
+                      jasmine.objectContaining({
+                        "Id": listId,
+                      }),
+                    ]),
+                  }));
+                  done();
+                });
+              });
+            });
+
+            it("REMOVES THE LIST FROM THE PARENT'S LIST OF LISTS", function (done) {
+              $testClient.$delete(authorization, `/list/${listId}`, function (err, res) {
+                $testClient.$get(authorization, `/list/${parentListId}/lists`, function (err, res) {
+                  expect(res.statusCode).toBe(200);
+                  expect(res.d).not.toEqual(jasmine.arrayContaining([
+                    jasmine.objectContaining({
+                      "Id": listId,
+                    }),
+                  ]));
                   done();
                 });
               });
