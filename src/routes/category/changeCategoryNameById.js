@@ -22,7 +22,33 @@ function changeCategoryNameById (taskevo) {
   const authz = taskevo.authz;
 
   return function (req, res) {
-    res.status(200).send();
+    let categoryId = req.params.categoryId;
+    let userId = req.authUser.get("Id");
+    let categoryUri = `/category/${categoryId}`;
+
+    authz.verifyOwnership(categoryUri, userId)
+      .then(fetchCategory)
+      .then(changeCategoryName)
+      .then(returnSuccess)
+      .catch(onError);
+
+    function fetchCategory () {
+      return db.fetchCategoryById(categoryId);
+    }
+
+    function changeCategoryName (category) {
+      return category.save({
+        Name: req.body.newValue || 'My Category',
+      });
+    }
+
+    function returnSuccess () {
+      res.status(200).send();
+    }
+
+    function onError () {
+      res.status(400).send();
+    }
   }
 
 }

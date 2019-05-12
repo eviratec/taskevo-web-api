@@ -30,7 +30,7 @@ function addCategoryRoutes (taskevo) {
     ["get", "/category/:categoryId", require("./fetchCategoryById")],
 
     // Change list properties
-    ["put", "/list/:listId/name", require("./changeCategoryNameById")],
+    ["put", "/category/:categoryId/name", require("./changeCategoryNameById")],
 
   ];
 
