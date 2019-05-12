@@ -162,14 +162,14 @@ describe("CATEGORY REST API", function () {
       });
     });
 
-    it("RETURNS `HTTP/1.1 403 Forbidden` WHEN `Authorization` HEADER IS NOT PROVIDED", function (done) {
-      $testClient.$delete(null, `/category/${categoryId}`, function (err, res) {
-        expect(res.statusCode).toBe(403);
-        done();
-      });
-    });
+    describe("deleting categories", function () {
 
-    describe("deleteCategory <DELETE> with valid parameters", function () {
+      it("RETURNS `HTTP/1.1 403 Forbidden` WHEN `Authorization` HEADER IS NOT PROVIDED", function (done) {
+        $testClient.$delete(null, `/category/${categoryId}`, function (err, res) {
+          expect(res.statusCode).toBe(403);
+          done();
+        });
+      });
 
       describe("as the resource owner", function () {
 
