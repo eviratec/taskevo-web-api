@@ -22,7 +22,33 @@ function changeListTitleById (taskevo) {
   const authz = taskevo.authz;
 
   return function (req, res) {
-    res.status(200).send();
+    let listId = req.params.listId;
+    let userId = req.authUser.get("Id");
+    let listUri = `/list/${listId}`;
+
+    authz.verifyOwnership(listUri, userId)
+      .then(fetchList)
+      .then(changeListTitle)
+      .then(returnSuccess)
+      .catch(onError);
+
+    function fetchList () {
+      return db.fetchListById(listId);
+    }
+
+    function changeListTitle (list) {
+      return list.save({
+        Title: req.body.newValue || 'My List',
+      });
+    }
+
+    function returnSuccess () {
+      res.status(200).send();
+    }
+
+    function onError () {
+      res.status(400).send();
+    }
   }
 
 }
