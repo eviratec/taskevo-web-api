@@ -3,7 +3,7 @@ CREATE TABLE `lists` (
   `OwnerId` varchar(36) NOT NULL,
   `ParentId` varchar(36) NOT NULL,
   `CategoryId` varchar(36) NOT NULL,
-  `Title` varchar(45) NOT NULL,
+  `Title` varchar(255) NOT NULL,
   `Created` int(11) NOT NULL,
   `Due` int(11) DEFAULT NULL,
   `Started` int(11) DEFAULT NULL,
