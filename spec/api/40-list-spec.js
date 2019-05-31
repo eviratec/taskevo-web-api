@@ -131,11 +131,33 @@ describe("LIST REST API", function () {
           });
         });
 
-        it("SETS THE CORRECT VALUE FOR THE `Due` PROPERTY", function (done) {
+        it("SETS THE CORRECT VALUE FOR THE `Due` PROPERTY WHEN A NUMBER", function (done) {
           $testClient.$post(authorization, `/lists`, listData, function (err, res) {
             let listId = res.d.Id;
             $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
               expect(res.d.Due).toBe(listDue);
+              done();
+            });
+          });
+        });
+
+        it("SETS THE CORRECT VALUE FOR THE `Due` PROPERTY WHEN NULL", function (done) {
+          listData.Due = null;
+          $testClient.$post(authorization, `/lists`, listData, function (err, res) {
+            let listId = res.d.Id;
+            $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
+              expect(res.d.Due).toBe(null);
+              done();
+            });
+          });
+        });
+
+        it("SETS THE CORRECT VALUE FOR THE `Due` PROPERTY WHEN NOT IN OBJECT", function (done) {
+          delete(listData.Due);
+          $testClient.$post(authorization, `/lists`, listData, function (err, res) {
+            let listId = res.d.Id;
+            $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
+              expect(res.d.Due).toBe(null);
               done();
             });
           });
