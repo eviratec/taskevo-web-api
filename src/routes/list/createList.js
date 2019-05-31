@@ -26,13 +26,19 @@ function createList (taskevo) {
   const List = db.List;
 
   return function (req, res) {
+    let due = req.body.Due;
     let listId = v4uuid();
-    let list = List.forge({
+    let list;
+
+    due = 'number' === typeof due && due || null;
+
+    list = List.forge({
       Id: listId,
       OwnerId: req.authUser.get("Id"),
       ParentId: req.body.ParentId || null,
       CategoryId: req.body.CategoryId || null,
       Title: req.body.Title || "New List",
+      Due: due,
       Created: Math.floor(Date.now()/1000),
     });
 
