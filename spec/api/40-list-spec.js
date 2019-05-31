@@ -355,6 +355,94 @@ describe("LIST REST API", function () {
 
         });
 
+        describe("changing the value for the 'Due' property", function () {
+
+          describe("to 'now'", function () {
+
+            it("RETURNS `HTTP/1.1 200 OK`", function (done) {
+              let data = {
+                newValue: "now",
+              };
+              $testClient.$put(authorization, `/list/${listId}/due`, data, function (err, res) {
+                expect(res.statusCode).toBe(200);
+                done();
+              });
+            });
+
+            it("UPDATES THE VALUE CORRECTLY", function (done) {
+              let data = {
+                newValue: "now",
+              };
+              $testClient.$put(authorization, `/list/${listId}/due`, data, function (err, res) {
+                $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
+                  expect(res.d.Due).toEqual(jasmine.any(Number));
+                  done();
+                });
+              });
+            });
+
+          });
+
+          describe("to a timestamp", function () {
+
+            let timestamp;
+
+            beforeEach(function () {
+              timestamp = Math.floor(Date.now()/1000);
+            });
+
+            it("RETURNS `HTTP/1.1 200 OK`", function (done) {
+              let data = {
+                newValue: timestamp,
+              };
+              $testClient.$put(authorization, `/list/${listId}/due`, data, function (err, res) {
+                expect(res.statusCode).toBe(200);
+                done();
+              });
+            });
+
+            it("UPDATES THE VALUE CORRECTLY", function (done) {
+              let data = {
+                newValue: timestamp,
+              };
+              $testClient.$put(authorization, `/list/${listId}/due`, data, function (err, res) {
+                $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
+                  expect(res.d.Due).toBe(timestamp);
+                  done();
+                });
+              });
+            });
+
+          });
+
+          describe("to null", function () {
+
+            it("RETURNS `HTTP/1.1 200 OK`", function (done) {
+              let data = {
+                newValue: null,
+              };
+              $testClient.$put(authorization, `/list/${listId}/due`, data, function (err, res) {
+                expect(res.statusCode).toBe(200);
+                done();
+              });
+            });
+
+            it("UPDATES THE VALUE CORRECTLY", function (done) {
+              let data = {
+                newValue: null,
+              };
+              $testClient.$put(authorization, `/list/${listId}/due`, data, function (err, res) {
+                $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
+                  expect(res.d.Due).toBe(null);
+                  done();
+                });
+              });
+            });
+
+          });
+
+        });
+
       });
 
       describe("deleting top-level lists", function () {
