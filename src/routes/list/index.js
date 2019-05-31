@@ -38,6 +38,7 @@ function addListRoutes (taskevo) {
     ["put", "/list/:listId/title", require("./changeListTitleById")],
     ["put", "/list/:listId/details", require("./changeListDetailsById")],
     ["put", "/list/:listId/completed", require("./changeListCompletedById")],
+    ["put", "/list/:listId/due", require("./changeListDueById")],
 
   ];
 
