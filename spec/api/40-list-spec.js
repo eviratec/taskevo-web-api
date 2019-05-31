@@ -54,10 +54,13 @@ describe("LIST REST API", function () {
     let categoryId;
 
     let listData;
+    let listDue;
 
     beforeEach(function (done) {
+      listDue = Math.round((Date.now()/1000)+36000);
       listData = {
         Title: "My Test List",
+        Due: listDue,
       };
       categoryData = {
         Title: "My Test Category",
@@ -113,6 +116,26 @@ describe("LIST REST API", function () {
             let listId = res.d.Id;
             $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
               expect(res.statusCode).toBe(200);
+              done();
+            });
+          });
+        });
+
+        it("SETS THE CORRECT VALUE FOR THE `Title` PROPERTY", function (done) {
+          $testClient.$post(authorization, `/lists`, listData, function (err, res) {
+            let listId = res.d.Id;
+            $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
+              expect(res.d.Title).toBe("My Test List");
+              done();
+            });
+          });
+        });
+
+        it("SETS THE CORRECT VALUE FOR THE `Due` PROPERTY", function (done) {
+          $testClient.$post(authorization, `/lists`, listData, function (err, res) {
+            let listId = res.d.Id;
+            $testClient.$get(authorization, `/list/${listId}`, function (err, res) {
+              expect(res.d.Due).toBe(listDue);
               done();
             });
           });
